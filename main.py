@@ -1,12 +1,11 @@
-import os,io
+import os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import numpy as np
 from keras.preprocessing import image
-from keras.metrics import Accuracy
 from keras.utils import load_img, img_to_array,array_to_img
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Activation, Conv2D,MaxPool2D,Dropout,Flatten
+from keras.layers import Dense, Conv2D,MaxPool2D,Dropout,Flatten
 
 # data 가져오기
 open_list = [f for f in os.listdir('./open_eyes/') if not f.startswith('.')]
