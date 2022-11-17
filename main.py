@@ -1,4 +1,3 @@
-import tensorflow as tf
 import os,io
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
