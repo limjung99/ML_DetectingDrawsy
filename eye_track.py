@@ -23,9 +23,27 @@ def crop_eye(img, eye_points):
     max_x, max_y = int(cx + margin_x), int(cy + margin_y)
 
     eye_rect = np.rint([min_x, min_y, max_x, max_y]).astype(int)
-
+    temp1 = eye_rect[3]-eye_rect[1]
+    while  temp1 != 38:
+        if temp1 < 38:
+            eye_rect[3]+=0.5
+            eye_rect[1]-=0.5
+        else:
+            eye_rect[3]-=0.5
+            eye_rect[1]+=0.5
+        temp1 =(eye_rect[3]-eye_rect[1])
+    
+    temp2 = eye_rect[2]-eye_rect[0]
+    while  temp2 != 38:
+        if temp2 < 38:
+            eye_rect[2]+=0.5
+            eye_rect[0]-=0.5
+        else:
+            eye_rect[2]-=0.5
+            eye_rect[0]+=0.5
+        temp2 =(eye_rect[2]-eye_rect[0])
     eye_img = gray[eye_rect[1]:eye_rect[3], eye_rect[0]:eye_rect[2]]
-
+    print(eye_img.shape)
     return eye_img, eye_rect
 
 # main
@@ -66,6 +84,7 @@ while count<m:
         cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
         cv2.imwrite('./eyes_add/'+str(count)+'.jpg',img[ey:eh,ex:ew,:])
         images_array.append(img[ey:eh,ex:ew,:])
+        # print(img[ey:eh,ex:ew,:].shape)
     count+=1
 
 
@@ -74,3 +93,4 @@ while count<m:
         break
 
 # images_array => 5초에 50장 저장한 배열
+cv2.destroyAllWindows()
