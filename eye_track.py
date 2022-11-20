@@ -24,8 +24,8 @@ def crop_eye(img, eye_points):
 
     eye_rect = np.rint([min_x, min_y, max_x, max_y]).astype(int)
     temp1 = eye_rect[3]-eye_rect[1]
-    while  temp1 != 38:
-        if temp1 < 38:
+    while  temp1 != 100:
+        if temp1 < 100:
             eye_rect[3]+=0.5
             eye_rect[1]-=0.5
         else:
@@ -34,8 +34,8 @@ def crop_eye(img, eye_points):
         temp1 =(eye_rect[3]-eye_rect[1])
     
     temp2 = eye_rect[2]-eye_rect[0]
-    while  temp2 != 38:
-        if temp2 < 38:
+    while  temp2 != 100:
+        if temp2 < 100:
             eye_rect[2]+=0.5
             eye_rect[0]-=0.5
         else:
@@ -48,7 +48,7 @@ def crop_eye(img, eye_points):
 
 # main
 # 동영상 넣으려면 아래 변수 0대신 동영상 파일 넣으면 됩니다.
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("awake.mov")
 count = 0
 m = 50
 images_array = []
@@ -57,6 +57,7 @@ images_array = []
 while count<m:
     time.sleep(0.1)
     ret, img_ori = cap.read()
+    img_ori = cv2.flip(img_ori,0)
 
     if not ret:
         raise Exception("캡처가 없음")
