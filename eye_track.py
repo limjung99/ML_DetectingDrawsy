@@ -29,6 +29,7 @@ def crop_eye(img, eye_points):
     return eye_img, eye_rect
 
 # main
+# 동영상 넣으려면 아래 변수 0대신 동영상 파일 넣으면 됩니다.
 cap = cv2.VideoCapture(0)
 count = 0
 m = 50
