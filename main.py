@@ -6,6 +6,7 @@ from keras.preprocessing import image
 from keras.utils import load_img, img_to_array,array_to_img
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D,MaxPool2D,Dropout,Flatten
+from eye_track import *
 
 # data 가져오기
 open_list = [f for f in os.listdir('./open_eyes/') if not f.startswith('.')]
@@ -54,11 +55,16 @@ else:
     history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=10, batch_size=5)
     model.save('eye_model.h5')
 
-#test 데이터 돌려서 plotting 
-test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
-test_prediction = np.argmax(model.predict(x_test), axis=-1)
-plt.figure(figsize=(13,13))
 
+
+test_prediction = np.argmax(model.predict(images_array),axis=-1)
+
+#test 데이터 돌려서 plotting 
+#test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+#test_prediction = np.argmax(model.predict(x_test), axis=-1)
+print(test_prediction)
+#plt.figure(figsize=(13,13))
+'''
 s = 0
 for i in range(25):
     plt.subplot(5,5,i+1)
@@ -74,7 +80,7 @@ for i in range(25):
     plt.imshow(array_to_img(x_test[s+i]))
 
 plt.show()
-
+'''
 # test image 넣어서 결과 반환
 # list t => array로 만든 이미지들 넣는 list
 # list y_test => 해당 이미지에 맞는 결과값( 0 / 1 ) 넣는 list
