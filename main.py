@@ -52,61 +52,49 @@ else:
     model.add(Dropout(0.5))
     model.add(Dense(2, activation='softmax'))
     model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=10, batch_size=5)
+    history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=10, batch_size=10)
     model.save('eye_model.h5')
 
+# s=0 
+# for i in range(25):
+#     plt.subplot(5,5,i+1)
+#     plt.grid(False)
+#     plt.xticks([])
+#     plt.yticks([])
+#     col = 'g'
+#     plt.imshow(array_to_img(images_array[0+i],scale=False))
 
-
+# plt.show()
+images_array = np.array(images_array)
 test_prediction = np.argmax(model.predict(images_array),axis=-1)
 
-#test 데이터 돌려서 plotting 
-#test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
-#test_prediction = np.argmax(model.predict(x_test), axis=-1)
+# 예측한 test 값들
 print(test_prediction)
-#plt.figure(figsize=(13,13))
-'''
-s = 0
 for i in range(25):
     plt.subplot(5,5,i+1)
     plt.grid(False)
     plt.xticks([])
     plt.yticks([])
-    prediction = test_prediction[s+i]
-    actual = y_test[s+i]
-    col = 'g'
-    if prediction!=actual:
-        col='r'
-    plt.xlabel('Actual={} || Pred={}'.format(actual, prediction), color=col)
-    plt.imshow(array_to_img(x_test[s+i]))
+    plt.imshow(array_to_img(images_array[0+i]))
+plt.show()
 
-plt.show()
-'''
-# test image 넣어서 결과 반환
-# list t => array로 만든 이미지들 넣는 list
-# list y_test => 해당 이미지에 맞는 결과값( 0 / 1 ) 넣는 list
-'''
-test_img = load_img('./test.jpg', target_size=(img_w, img_h))
-test_img = img_to_array(test_img)
-t = []
-t.append(test_img)
-print(t)
-test_array = np.array(t)
-test_prediction = np.argmax(model.predict(test_array), axis=-1)
-y_test = []
-y_test.append(0)
-plt.figure(figsize=(13,13))
-s = 0
-for i in range(1):
-    plt.subplot(5,5,i+1)
-    plt.grid(False)
-    plt.xticks([])
-    plt.yticks([])
-    prediction = test_prediction[s+i]
-    actual = y_test[s+i]
-    col = 'g'
-    if prediction!=actual:
-        col='r'
-    plt.xlabel('Actual={} || Pred={}'.format(actual, prediction), color=col)
-    plt.imshow(array_to_img(test_array[s+i]))
-plt.show()
-'''
+
+# test 데이터 돌려서 plotting 
+# test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+# test_prediction = np.argmax(model.predict(x_test), axis=-1)
+# plt.figure(figsize=(13,13))
+# s = 0
+# for i in range(25):
+#     plt.subplot(5,5,i+1)
+#     plt.grid(False)
+#     plt.xticks([])
+#     plt.yticks([])
+#     prediction = test_prediction[s+i]
+#     actual = y_test[s+i]
+#     col = 'g'
+#     if prediction!=actual:
+#         col='r'
+#     plt.xlabel('Actual={} || Pred={}'.format(actual, prediction), color=col)
+#     plt.imshow(array_to_img(x_test[s+i]))
+
+# plt.show()

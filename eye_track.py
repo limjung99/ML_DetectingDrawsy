@@ -2,6 +2,8 @@ import cv2, dlib
 import numpy as np
 from imutils import face_utils
 from keras.models import load_model
+from keras.utils import load_img, img_to_array,array_to_img
+import matplotlib.pyplot as plt
 import time
 
 IMG_SIZE = (100, 100)
@@ -43,12 +45,11 @@ def crop_eye(img, eye_points):
             eye_rect[0]+=0.5
         temp2 =(eye_rect[2]-eye_rect[0])
     eye_img = gray[eye_rect[1]:eye_rect[3], eye_rect[0]:eye_rect[2]]
-    print(eye_img.shape)
     return eye_img, eye_rect
 
 # main
 # 동영상 넣으려면 아래 변수 0대신 동영상 파일 넣으면 됩니다.
-cap = cv2.VideoCapture("awake.mov")
+cap = cv2.VideoCapture("open_mov.mp4")
 count = 0
 m = 50
 images_array = []
@@ -65,7 +66,7 @@ while count<m:
     img_ori = cv2.resize(img_ori, dsize=(0, 0), fx=0.5, fy=0.5)
 
     img = img_ori.copy()
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     faces = detector(gray)
 
     for face in faces:
@@ -83,15 +84,12 @@ while count<m:
         eye_img_r = cv2.resize(eye_img_r, dsize=IMG_SIZE)
         eye_img_r = cv2.flip(eye_img_r, flipCode=1)
         cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
-        cv2.imwrite('./eyes_add/'+str(count)+'.jpg',img[ey:eh,ex:ew,:])
-        images_array.append(img[ey:eh,ex:ew,:])
+        images_array.append(eye_img_l)
+        
         # print(img[ey:eh,ex:ew,:].shape)
     count+=1
-
-
     cv2.imshow('result', img)
     if cv2.waitKey(1) == ord('q'):
         break
-
 # images_array => 5초에 50장 저장한 배열
 cv2.destroyAllWindows()
