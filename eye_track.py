@@ -5,6 +5,7 @@ from keras.models import load_model
 from keras.utils import load_img, img_to_array,array_to_img
 import matplotlib.pyplot as plt
 import time
+import os 
 
 IMG_SIZE = (100, 100)
 
@@ -49,47 +50,71 @@ def crop_eye(img, eye_points):
 
 # main
 # 동영상 넣으려면 아래 변수 0대신 동영상 파일 넣으면 됩니다.
-cap = cv2.VideoCapture("open_mov.mp4")
-count = 0
-m = 50
-images_array = []
 
-# 5초에 50장 뽑아냄
-while count<m:
-    time.sleep(0.1)
-    ret, img_ori = cap.read()
-    img_ori = cv2.flip(img_ori,0)
 
-    if not ret:
-        raise Exception("캡처가 없음")
+# data 가져오기
+awaken_list = [f for f in os.listdir('./awaken/') if not f.startswith('.')]
+sleeping_list = [f for f in os.listdir('./sleeping/') if not f.startswith('.')]
 
-    img_ori = cv2.resize(img_ori, dsize=(0, 0), fx=0.5, fy=0.5)
+videos = []  # 실제 데이터-> (각 영상으로부터 추출한 50장의 눈 사진 이미지)들의 배열 
+video_labels = []  # 정답 데이터(1,0으로 분류) -> 0은 sleeping 1은 awaken
 
-    img = img_ori.copy()
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    faces = detector(gray)
 
-    for face in faces:
-        shapes = predictor(gray, face)
-        shapes = face_utils.shape_to_np(shapes)
-        x = face.left()
-        y = face.top() #could be face.bottom() - not sure
-        w = face.right() - face.left()
-        h = face.bottom() - face.top()
+def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
+    cap = cv2.VideoCapture("./")
+    count = 0
+    m = 50
+    images_array = []
 
-        eye_img_l, eye_rect_l = crop_eye(gray, eye_points=shapes[36:42])
-        eye_img_r, eye_rect_r = crop_eye(gray, eye_points=shapes[42:48])
-        ex,ey,ew,eh = eye_rect_l
-        eye_img_l = cv2.resize(eye_img_l, dsize=IMG_SIZE)
-        eye_img_r = cv2.resize(eye_img_r, dsize=IMG_SIZE)
-        eye_img_r = cv2.flip(eye_img_r, flipCode=1)
-        cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
-        images_array.append(eye_img_l)
-        
-        # print(img[ey:eh,ex:ew,:].shape)
-    count+=1
-    cv2.imshow('result', img)
-    if cv2.waitKey(1) == ord('q'):
-        break
+    # 5초에 50장 뽑아냄
+    while count<m:
+        time.sleep(0.1)
+        ret, img_ori = cap.read()
+        img_ori = cv2.flip(img_ori,0)
+
+        if not ret:
+            raise Exception("캡처가 없음")
+
+        img_ori = cv2.resize(img_ori, dsize=(0, 0), fx=0.5, fy=0.5)
+
+        img = img_ori.copy()
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        faces = detector(gray)
+
+        for face in faces:
+            shapes = predictor(gray, face)
+            shapes = face_utils.shape_to_np(shapes)
+            x = face.left()
+            y = face.top() #could be face.bottom() - not sure
+            w = face.right() - face.left()
+            h = face.bottom() - face.top()
+
+            eye_img_l, eye_rect_l = crop_eye(gray, eye_points=shapes[36:42])
+            eye_img_r, eye_rect_r = crop_eye(gray, eye_points=shapes[42:48])
+            ex,ey,ew,eh = eye_rect_l
+            eye_img_l = cv2.resize(eye_img_l, dsize=IMG_SIZE)
+            eye_img_r = cv2.resize(eye_img_r, dsize=IMG_SIZE)
+            eye_img_r = cv2.flip(eye_img_r, flipCode=1)
+            cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
+            images_array.append(eye_img_l)
+            
+            # print(img[ey:eh,ex:ew,:].shape)
+        count+=1
+        cv2.imshow('result', img)
+        if cv2.waitKey(1) == ord('q'):
+            break
+    return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
+
+for i in awaken_list:
+    array = capture("./awaken/"+i)
+    videos.append(array)
+    video_labels.append(1)  # 깨어있는 영상 : 
+
+for i in sleeping_list:
+    array = capture("./sleeping/"+i)
+    videos.append(array)
+    video_labels.append(0)
+
+#window close
 cv2.destroyAllWindows()
