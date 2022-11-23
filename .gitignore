@@ -1,6 +1,6 @@
-eye_model.h5
+*.h5
 .DS_Store
-open_eyes/
-close_eyes/
+open_eye/
+close_eye/
 eyes_add/
 __pycache__
