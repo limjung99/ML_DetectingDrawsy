@@ -6,6 +6,7 @@ from keras.utils import load_img, img_to_array,array_to_img
 import matplotlib.pyplot as plt
 import time
 import os 
+import pickle
 
 IMG_SIZE = (100, 100)
 
@@ -106,19 +107,27 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
 
-
-
-
 for i in awaken_list:
+    print(i)
     array = capture("./nd1/"+i)
     videos.append(array)
     video_labels.append(1)  # 깨어있는 영상 : 
 
 for i in sleeping_list:
+    print(i)
     array = capture("./drawsy/"+i)
     videos.append(array)
     video_labels.append(0)
 
+
+
+
+
+#재사용가능하게 디렉토리에 pickle 모듈로 저장
+with open("videos_array","wb") as va:
+    pickle.dump(videos,va)
+with open("video_labels","wb") as vl:
+    pickle.dump(video_labels, vl)
 
 
 #window close
