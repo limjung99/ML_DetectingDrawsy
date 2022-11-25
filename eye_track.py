@@ -51,7 +51,9 @@ def crop_eye(gray, eye_points):
 
 # main
 # 동영상 넣으려면 아래 변수 0대신 동영상 파일 넣으면 됩니다.
-
+def get_duration(filename):
+        video = cv2.VideoCapture(filename)
+        return video.get(cv2.CAP_PROP_POS_MSEC)
 
 # data 가져오기
 awaken_list = [f for f in os.listdir('./nd1/') if not f.startswith('.')]
@@ -66,7 +68,7 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     count = 0
     m = 50
     images_array = []
-
+    flag=0
     # 5초에 50장 뽑아냄
     while count<m:
         time.sleep(0.1)
@@ -74,7 +76,8 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
 
 
         if not ret:
-            raise Exception("캡처가 없음")
+            flag=1
+            break
 
         img_ori = cv2.resize(img_ori, dsize=(0, 0), fx=0.5, fy=0.5)
 
@@ -104,23 +107,30 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
         cv2.imshow('result', img)
         if cv2.waitKey(1) == ord('q'):
             break
-    return np.array(images_array)
+    if flag==1:
+        return [0]
+    else:
+        return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
-
+'''
 for i in awaken_list:
     print(i)
     array = capture("./nd1/"+i)
+    if len(array)==1:
+        continue
     videos.append(array)
     video_labels.append(1)  # 깨어있는 영상 : 
 
 for i in sleeping_list:
     print(i)
     array = capture("./drawsy/"+i)
+    if len(array)==1:
+        continue
     videos.append(array)
     video_labels.append(0)
 
-
-
+'''
+capture("./nd1/non_drawsy238.mp4")
 
 
 #재사용가능하게 디렉토리에 pickle 모듈로 저장
