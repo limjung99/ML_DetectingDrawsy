@@ -112,14 +112,26 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     else:
         return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
-'''
+
+if os.path.isfile("videos_array"):
+    with open("videos_array","rb") as va:
+        videos=pickle.load(va)
+    with open("videos_labels","rb") as vl:
+        video_labels=pickle.load(vl)
+
 for i in awaken_list:
     print(i)
     array = capture("./nd1/"+i)
     if len(array)==1:
         continue
     videos.append(array)
-    video_labels.append(1)  # 깨어있는 영상 : 
+    video_labels.append(1)  # 깨어있는 영상 
+    with open("videos_array","wb") as va:
+        pickle.dump(videos,va)
+    with open("video_labels","wb") as vl:
+        pickle.dump(video_labels, vl)
+    os.remove("./nd1/"+i)
+
 
 for i in sleeping_list:
     print(i)
@@ -128,16 +140,18 @@ for i in sleeping_list:
         continue
     videos.append(array)
     video_labels.append(0)
+    with open("videos_array","wb") as va:
+        pickle.dump(videos,va)
+    with open("video_labels","wb") as vl:
+        pickle.dump(video_labels, vl)
+    os.remove("./drawsy/"+i)
 
-'''
-capture("./nd1/non_drawsy238.mp4")
+
+
 
 
 #재사용가능하게 디렉토리에 pickle 모듈로 저장
-with open("videos_array","wb") as va:
-    pickle.dump(videos,va)
-with open("video_labels","wb") as vl:
-    pickle.dump(video_labels, vl)
+
 
 
 #window close
