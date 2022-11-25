@@ -12,7 +12,7 @@ IMG_SIZE = (100, 100)
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
 
-def crop_eye(img, eye_points):
+def crop_eye(gray, eye_points):
     x1, y1 = np.amin(eye_points, axis=0)
     x2, y2 = np.amax(eye_points, axis=0)
     cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
@@ -53,15 +53,15 @@ def crop_eye(img, eye_points):
 
 
 # data 가져오기
-awaken_list = [f for f in os.listdir('./awaken/') if not f.startswith('.')]
-sleeping_list = [f for f in os.listdir('./sleeping/') if not f.startswith('.')]
+awaken_list = [f for f in os.listdir('./nd1/') if not f.startswith('.')]
+sleeping_list = [f for f in os.listdir('./drawsy/') if not f.startswith('.')]
 
 videos = []  # 실제 데이터-> (각 영상으로부터 추출한 50장의 눈 사진 이미지)들의 배열 
 video_labels = []  # 정답 데이터(1,0으로 분류) -> 0은 sleeping 1은 awaken
 
 
 def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
-    cap = cv2.VideoCapture("./")
+    cap = cv2.VideoCapture(path)
     count = 0
     m = 50
     images_array = []
@@ -70,7 +70,7 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     while count<m:
         time.sleep(0.1)
         ret, img_ori = cap.read()
-        img_ori = cv2.flip(img_ori,0)
+
 
         if not ret:
             raise Exception("캡처가 없음")
@@ -106,15 +106,20 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
 
+
+
+
 for i in awaken_list:
-    array = capture("./awaken/"+i)
+    array = capture("./nd1/"+i)
     videos.append(array)
     video_labels.append(1)  # 깨어있는 영상 : 
 
 for i in sleeping_list:
-    array = capture("./sleeping/"+i)
+    array = capture("./drawsy/"+i)
     videos.append(array)
     video_labels.append(0)
+
+
 
 #window close
 cv2.destroyAllWindows()

@@ -5,21 +5,30 @@ import numpy as np
 from keras.models import Sequential, load_model
 from keras.layers import Dense,Dropout
 from eye_track import *
-from main import * 
-
-
+from CNN_model import * 
+import os
 
 
 
 
 # 5초 x 초당 10개의 눈 사진 -> 요게 n개가 들어온다. 
-videos_arr = videos
-ans=video_labels #(정답 label / 영상)
+# load data
+with open('videos_array', 'rb') as fr:
+    videos_arr = pickle.load(fr)
+
+with open("videos_label","rb") as f:
+    ans = pickle.load(f)
+
+
+
 
 predicted = [] #예측한 눈동자 상태 배열이 안에 append 된다.
-mymodel = model
-for i in len(ans):
+mymodel = model #CNN모델 import 
+
+for i in videos_arr:
     predicted.append(np.argsort(mymodel.prediction(videos_arr[i]),axis=-1))
+
+
 
 
 #train 및 test데이터 분리 
@@ -28,7 +37,7 @@ x_train, x_test, y_train, y_test = train_test_split(np.array(predicted), np.arra
 
 model_file = './is_sleeping.h5'
 if os.path.isfile(model_file):
-    model = load_model('eye_model.h5')
+    model = load_model('is_sleeping.h5')
 else:
     #binary classification 
     model = Sequential()
