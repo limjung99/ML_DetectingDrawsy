@@ -96,4 +96,6 @@ def plot_history(history):
 # plot_history(history)
 
 model = load_model("eye_model5.h5")
-test_prediction = np.argmax(model.predict(test_images), axis=-1)
+test_prediction = []
+test_prediction.append(np.argmax(model.predict(test_images), axis=-1))
+test_prediction = np.array(test_prediction)
