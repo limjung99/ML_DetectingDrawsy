@@ -7,6 +7,7 @@ from keras.utils import load_img, img_to_array,array_to_img
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D,MaxPool2D,Dropout,Flatten,BatchNormalization
 import pickle
+from eye_track import test_images
 
 def load_data():
     # data 가져오기
@@ -35,9 +36,10 @@ def load_data():
     return x_train, x_test, y_train, y_test
 
 def make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes):
-    if os.path.isfile("eye_model3.h5"):
-        model = load_model("eye_model3.h5")
-        history = pickle.load(open('trainHistoryDict', "rb"))
+    if os.path.isfile("eye_model1.h5"):
+        model = load_model("eye_model1.h5")
+        # history = pickle.load(open('trainHistoryDict', "rb"))
+        history = ""
     else:
         model = Sequential()
         # 눈 이미지들이 약 80x80 ~ 110x110이여서 평균 100x100으로 잡음
@@ -83,13 +85,15 @@ def plot_history(history):
     plt.show()
 
 # 데이터 가져오기
-x_train, x_test, y_train, y_test = load_data()
+# x_train, x_test, y_train, y_test = load_data()
 
 # model 학습 
-epochs = 50
-batch_sizes = 10
-model, history = make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes)
+# epochs = 50
+# batch_sizes = 10
+# model, history = make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes)
 
 # Accuracy plot
-plot_history(history)
+# plot_history(history)
 
+model = load_model("eye_model5.h5")
+test_prediction = np.argmax(model.predict(test_images), axis=-1)
