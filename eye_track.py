@@ -27,25 +27,6 @@ def crop_eye(gray, eye_points):
     max_x, max_y = int(cx + margin_x), int(cy + margin_y)
 
     eye_rect = np.rint([min_x, min_y, max_x, max_y]).astype(int)
-    temp1 = eye_rect[3]-eye_rect[1]
-    while  temp1 != 100:
-        if temp1 < 100:
-            eye_rect[3]+=0.5
-            eye_rect[1]-=0.5
-        else:
-            eye_rect[3]-=0.5
-            eye_rect[1]+=0.5
-        temp1 =(eye_rect[3]-eye_rect[1])
-    
-    temp2 = eye_rect[2]-eye_rect[0]
-    while  temp2 != 100:
-        if temp2 < 100:
-            eye_rect[2]+=0.5
-            eye_rect[0]-=0.5
-        else:
-            eye_rect[2]-=0.5
-            eye_rect[0]+=0.5
-        temp2 =(eye_rect[2]-eye_rect[0])
     eye_img = gray[eye_rect[1]:eye_rect[3], eye_rect[0]:eye_rect[2]]
     return eye_img, eye_rect
 
@@ -64,7 +45,7 @@ video_labels = []  # 정답 데이터(1,0으로 분류) -> 0은 sleeping 1은 aw
 
 
 def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
-    cap = cv2.VideoCapture(path)
+    cap = cv2.VideoCapture(0)
     count = 0
     m = 50
     images_array = []
@@ -73,8 +54,6 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
     while count<m:
         time.sleep(0.1)
         ret, img_ori = cap.read()
-
-
         if not ret:
             flag=1
             break
@@ -113,10 +92,12 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
         return np.array(images_array)
 # images_array => 5초에 50장 저장한 배열
 
+test_images = capture("T")
+'''
 if os.path.isfile("videos_array"):
     with open("videos_array","rb") as va:
         videos=pickle.load(va)
-    with open("videos_labels","rb") as vl:
+    with open("video_labels","rb") as vl:
         video_labels=pickle.load(vl)
 
 for i in awaken_list:
@@ -132,7 +113,6 @@ for i in awaken_list:
         pickle.dump(video_labels, vl)
     os.remove("./nd1/"+i)
 
-
 for i in sleeping_list:
     print(i)
     array = capture("./drawsy/"+i)
@@ -142,10 +122,13 @@ for i in sleeping_list:
     video_labels.append(0)
     with open("videos_array","wb") as va:
         pickle.dump(videos,va)
+        va.close()
     with open("video_labels","wb") as vl:
         pickle.dump(video_labels, vl)
+        vl.close()
     os.remove("./drawsy/"+i)
 
+'''
 
 
 

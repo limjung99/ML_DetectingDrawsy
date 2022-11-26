@@ -67,8 +67,8 @@ def make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes):
     return model,history
 
 def plot_history(history):
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
     plt.legend(['training', 'validation'], loc = 'upper left')
     plt.show()
 
@@ -80,6 +80,8 @@ epochs = 100
 batch_sizes = 10
 model, history = make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes)
 
+results = model.evaluate(x_test, y_test)
+print('Test accuracy: ', results[1])
 # Accuracy plot
 plot_history(history)
 
