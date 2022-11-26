@@ -7,9 +7,6 @@ from keras.layers import Dense,Dropout
 from CNN_model import * 
 import os
 
-seed =5
-np.random.seed(seed)
-kfold = KFold(n_splits=2,shuffle=True,random_state=seed)
 
 # (50개의 눈 사진 ) 들의 배열  
 # load data
@@ -52,38 +49,65 @@ else:
 # #train 및 test데이터 분리 
 x_train, x_test, y_train, y_test = train_test_split(np.array(predicted), np.array(ans), test_size=0.2)
 # validation 데이터 분리 
-x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.2)
+#x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.2)
+
 
 
 model_file = './is_sleeping.h5'
 
+# Define the K-fold Cross Validator
+kfold = KFold(n_splits=5, shuffle=True)
+
+# K-fold Cross Validation model evaluation
+fold_no = 1
+
+
 # if os.path.isfile(model_file):
 #     model = load_model('is_sleeping.h5')
 # else:
-model = Sequential()
-model.add(Dense(32, activation='relu', input_shape=(50,))) 
-model.add(Dropout(0.1))
-model.add(Dense(64, activation='relu')) 
-model.add(Dropout(0.3))
-model.add(Dense(128,activation="relu"))
-model.add(BatchNormalization())
-model.add(Dropout(0.3))
-model.add(Dense(64, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(1, activation='sigmoid'))
-model.summary()
-#손실함수 binary_crossentropy 
-model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-#binary_crossentropy -> sparse_categorical_crossentropy 로변경, 왜 와이? 아웃풋이 2개니까 
-history = model.fit(x_train, y_train, epochs=100, batch_size=10,validation_data=(x_val, y_val))
-# model.save('is_sleeping.h5')
 
+#dataset이 부족하므로, k fold validation으로 검증 
+acc_per_fold=[]
+loss_per_fold=[]
+for train, test in kfold.split(x_train, y_train):
+    model = Sequential()
+    model.add(Dense(32, activation='relu', input_shape=(50,))) 
+    model.add(BatchNormalization())
+    model.add(Dropout(0.1))
+    model.add(Dense(64, activation='relu')) 
+    model.add(BatchNormalization())
+    model.add(Dropout(0.3))
+    model.add(Dense(128,activation="relu"))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.3))
+    model.add(Dense(64, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.1))
+    model.add(Dense(1, activation='sigmoid'))
+    model.summary()
+    #손실함수 binary_crossentropy 
+    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    #binary_crossentropy -> sparse_categorical_crossentropy 로변경, 왜 와이? 아웃풋이 2개니까 
+    history = model.fit(x_train, y_train, epochs=100, batch_size=5)
+
+    # Generate generalization metrics
+    scores = model.evaluate(x_train[test], y_train[test], verbose=0)
+    print(f'Score for fold {fold_no}: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]*100}%')
+    acc_per_fold.append(scores[1] * 100)
+    loss_per_fold.append(scores[0])
+
+    # Increase fold number
+    fold_no = fold_no + 1
+# model.save('is_sleeping.h5')
+print(acc_per_fold)
+print(loss_per_fold)
 
 # # #test 데이터 돌려서 plotting 
-test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
-test_prediction = np.argmax(model.predict(x_test), axis=-1)
+# test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+# test_prediction = np.argmax(model.predict(x_test), axis=-1)
 
 # #plt로 accuracy 및 validation 
+'''
 plt.plot(history.history['accuracy']) #훈련 정확도 
 plt.plot(history.history['val_accuracy'])
 plt.title('model')
@@ -91,7 +115,7 @@ plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc='upper left')
 plt.show()
-
+'''
  
 
 '''
