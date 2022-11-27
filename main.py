@@ -9,7 +9,8 @@ IMG_SIZE = (100, 100)
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
 
-def crop_eye(gray, eye_points):
+# 눈 이미지 및 눈 표현할 사각형 표시
+def crop_eye(gray, eye_points): 
     x1, y1 = np.amin(eye_points, axis=0)
     x2, y2 = np.amax(eye_points, axis=0)
     cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
@@ -26,19 +27,21 @@ def crop_eye(gray, eye_points):
     eye_img = gray[eye_rect[1]:eye_rect[3], eye_rect[0]:eye_rect[2]]
     return eye_img, eye_rect
 
+#계속 크롭한 이미지를 prediction함수에 넣어 현재 졸고 있는지 예측 후 return
 def get_drawsy(crop_images):
     images_prediction = First_model.blink_prediction(crop_images)
     now_drawsy = Second_model.drawsy_prediction(images_prediction)
     return now_drawsy[0] 
+
 # main
 if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
-    count = 0
-    images_array = []
-    drawsy_array = []
+    count = 0 # 캡처한 이미지 수
+    images_array = [] # 실제 이미지 array가 들어갈 list
+    drawsy_array = [] # 현재 졸음 상태를 저장할 array
     font = cv2.FONT_HERSHEY_SIMPLEX
     text = "Drawsy Detected!!!"
-    is_drawsy = 0
+    is_drawsy = 0 # 졸음 상태인지 아닌지 확인
     textsize = cv2.getTextSize(text, font, 1, 2)[0]
     # 5초에 50장 뽑아냄
     while True:
@@ -58,7 +61,7 @@ if __name__ == "__main__":
             shapes = predictor(gray, face)
             shapes = face_utils.shape_to_np(shapes)
             x = face.left()
-            y = face.top() #could be face.bottom() - not sure
+            y = face.top()
             w = face.right() - face.left()
             h = face.bottom() - face.top()
 
@@ -70,6 +73,7 @@ if __name__ == "__main__":
             eye_img_r = cv2.flip(eye_img_r, flipCode=1)
             if(is_drawsy == 1):
                 cv2.putText(img, text, (textX, textY), font, 1, (0, 0, 255), 2)
+            # 눈 인식하면 이를 이미지에 저장하고 직사각형으로 표시
             cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
             images_array.append(eye_img_l)
             count+=1 
@@ -77,6 +81,7 @@ if __name__ == "__main__":
         cv2.imshow('result2', img)
         if cv2.waitKey(1) == ord('q'):
             break
+        # 7초가 되면 0~5초,1~6초,2~7초에 찍은 50장씩의 데이터를 prediction하여 졸음 인식
         if count %70 == 0:
             for i in range(0,3):
                 start = i * 10
