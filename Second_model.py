@@ -61,7 +61,7 @@ def make_model(predicted,ans):
     if os.path.isfile(model_file):
         second_model = load_model('fitted_second_model.h5')
     else:
-        #dataset이 부족하므로, k fold validation으로 검증 
+        #dataset이 부족하므로, k-fold validation으로 검증 
         acc_per_fold=[]
         loss_per_fold=[]
         k=5
