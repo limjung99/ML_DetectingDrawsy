@@ -69,7 +69,7 @@ if __name__ == "__main__":
             eye_img_r = cv2.resize(eye_img_r, dsize=IMG_SIZE)
             eye_img_r = cv2.flip(eye_img_r, flipCode=1)
             if(is_drawsy == 1):
-                cv2.putText(img, text, (textX, textY), font, 1, (255, 0, 0), 2)
+                cv2.putText(img, text, (textX, textY), font, 1, (0, 0, 255), 2)
             cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
             images_array.append(eye_img_l)
             count+=1 
@@ -84,12 +84,9 @@ if __name__ == "__main__":
                 crop_images = np.array(images_array[start:end])
                 now_drawsy = get_drawsy(crop_images)
                 drawsy_array.append(now_drawsy)
-            print(drawsy_array)
             if sum(drawsy_array) > 1:
                 is_drawsy = 0
-                print("깨어있음")
             else:
-                print("졸음")
                 is_drawsy = 1
             images_array = []
             count = 0

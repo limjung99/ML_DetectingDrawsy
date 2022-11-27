@@ -77,7 +77,6 @@ def blink_prediction(crop_images):
         images_prediction = []
         images_prediction.append(np.argmax(model.predict(crop_images), axis=-1))
         images_prediction = np.array(images_prediction)
-        print("-------------images_prediction 반환-------------")
         return images_prediction
     else: # 만들어둔 모델 파일이 없는 경우
         x_train, x_test, y_train, y_test = load_data()
@@ -87,7 +86,6 @@ def blink_prediction(crop_images):
         images_prediction = []
         images_prediction.append(np.argmax(model.predict(crop_images), axis=-1))
         images_prediction = np.array(images_prediction)
-        print("-------------images_prediction 만들고 반환-------------")
         return images_prediction
 
     

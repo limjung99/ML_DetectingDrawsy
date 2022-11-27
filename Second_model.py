@@ -64,11 +64,9 @@ def make_model(predicted,ans):
 
     model_file = 'fitted_second_model.h5'
     if os.path.isfile(model_file):
-        print("ASDF")
         second_model = load_model('fitted_second_model.h5')
     else:
         #dataset이 부족하므로, k fold validation으로 검증 
-        print("여기")
         acc_per_fold=[]
         loss_per_fold=[]
         k=5
@@ -104,7 +102,6 @@ def drawsy_prediction(images_prediction):
     predicted = make_predicted()
     second_model = make_model(predicted,videos_label)
     now_drawsy = np.argmax(second_model.predict(np.array(images_prediction)),axis=-1)
-    print("-------------now_drawsy 반환-------------")
     return now_drawsy
 
 
