@@ -2,12 +2,9 @@ import os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import numpy as np
-from keras.preprocessing import image
-from keras.utils import load_img, img_to_array,array_to_img
+from keras.utils import load_img, img_to_array
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D,MaxPool2D,Dropout,Flatten,BatchNormalization
-import pickle
-from eye_track import test_images
 
 def load_data():
     # data 가져오기
@@ -36,44 +33,35 @@ def load_data():
     return x_train, x_test, y_train, y_test
 
 def make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes):
-    if os.path.isfile("fitted_first_model.h5"):
-        model = load_model("fitted_first_model.h5")
-        # history = pickle.load(open('trainHistoryDict', "rb"))
-        history = ""
-    else:
-        model = Sequential()
-        # 눈 이미지들이 약 80x80 ~ 110x110이여서 평균 100x100으로 잡음
-        img_w, img_h = 100,100
-        model.add(Conv2D(input_shape = (img_w, img_h, 3), filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPool2D(pool_size = (2,2)))
-        model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPool2D(pool_size = (2,2)))
-        model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPool2D(pool_size = (2,2)))
-        model.add(Flatten())
-        model.add(Dense(50, activation = 'relu', kernel_initializer='he_normal'))
-        model.add(Dropout(0.5))
-        model.add(Dense(10, activation = 'softmax', kernel_initializer='he_normal'))
+    model = Sequential()
+    # 눈 이미지들이 약 80x80 ~ 110x110이여서 평균 100x100으로 잡음
+    img_w, img_h = 100,100
+    model.add(Conv2D(input_shape = (img_w, img_h, 3), filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(filters = 50, kernel_size = (3,3), strides = (1,1), padding = 'same', kernel_initializer='he_normal',activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Flatten())
+    model.add(Dense(50, activation = 'relu', kernel_initializer='he_normal'))
+    model.add(Dropout(0.5))
+    model.add(Dense(10, activation = 'softmax', kernel_initializer='he_normal'))
 
-        model.summary()
-        
-        model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs, batch_size=batch_sizes)
+    model.summary()
+    
+    model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs, batch_size=batch_sizes)
 
-        model.save('fitted_first_model.h5')
-        with open('fitted_first_model_history', 'wb') as file_pi:
-            pickle.dump(model.history, file_pi)
-
-      
+    model.save('fitted_first_model.h5')
 
     return model,history
 
@@ -83,18 +71,23 @@ def plot_history(history):
     plt.legend(['training', 'validation'], loc = 'upper left')
     plt.show()
 
-# 데이터 가져오기
-# x_train, x_test, y_train, y_test = load_data()
+def blink_prediction(crop_images):
+    if os.path.isfile("fitted_first_model.h5"): # 모델 파일이 있는 경우
+        model = load_model("fitted_first_model.h5")
+        images_prediction = []
+        images_prediction.append(np.argmax(model.predict(crop_images), axis=-1))
+        images_prediction = np.array(images_prediction)
+        print("-------------images_prediction 반환-------------")
+        return images_prediction
+    else: # 만들어둔 모델 파일이 없는 경우
+        x_train, x_test, y_train, y_test = load_data()
+        epochs = 100
+        batch_sizes = 10
+        model,history = make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes)
+        images_prediction = []
+        images_prediction.append(np.argmax(model.predict(crop_images), axis=-1))
+        images_prediction = np.array(images_prediction)
+        print("-------------images_prediction 만들고 반환-------------")
+        return images_prediction
 
-# model 학습 
-# epochs = 50
-# batch_sizes = 10
-# model, history = make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes)
-
-# Accuracy plot
-# plot_history(history)
-
-model = load_model("fitted_first_model.h5")
-test_prediction = []
-test_prediction.append(np.argmax(model.predict(test_images), axis=-1))
-test_prediction = np.array(test_prediction)
+    
