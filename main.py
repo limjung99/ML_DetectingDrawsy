@@ -36,6 +36,10 @@ if __name__ == "__main__":
     count = 0
     images_array = []
     drawsy_array = []
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    text = "Drawsy Detected!!!"
+    is_drawsy = 0
+    textsize = cv2.getTextSize(text, font, 1, 2)[0]
     # 5초에 50장 뽑아냄
     while True:
         time.sleep(0.1)
@@ -48,7 +52,8 @@ if __name__ == "__main__":
         img = img_ori.copy()
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         faces = detector(gray)
-
+        textX = (img.shape[1] - textsize[0]) // 2
+        textY = (img.shape[0] + textsize[1]) // 2
         for face in faces:
             shapes = predictor(gray, face)
             shapes = face_utils.shape_to_np(shapes)
@@ -63,11 +68,13 @@ if __name__ == "__main__":
             eye_img_l = cv2.resize(eye_img_l, dsize=IMG_SIZE)
             eye_img_r = cv2.resize(eye_img_r, dsize=IMG_SIZE)
             eye_img_r = cv2.flip(eye_img_r, flipCode=1)
+            if(is_drawsy == 1):
+                cv2.putText(img, text, (textX, textY), font, 1, (255, 0, 0), 2)
             cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
             images_array.append(eye_img_l)
             count+=1 
             # print(img[ey:eh,ex:ew,:].shape)
-        cv2.imshow('result', img)
+        cv2.imshow('result2', img)
         if cv2.waitKey(1) == ord('q'):
             break
         if count %70 == 0:
@@ -79,13 +86,14 @@ if __name__ == "__main__":
                 drawsy_array.append(now_drawsy)
             print(drawsy_array)
             if sum(drawsy_array) > 1:
+                is_drawsy = 0
                 print("깨어있음")
             else:
                 print("졸음")
+                is_drawsy = 1
             images_array = []
             count = 0
             drawsy_array = []
-
 # images_array => 5초에 50장 저장한 배열
 
 cv2.destroyAllWindows()
