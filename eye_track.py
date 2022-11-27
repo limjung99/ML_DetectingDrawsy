@@ -80,9 +80,9 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
             eye_img_r = cv2.flip(eye_img_r, flipCode=1)
             cv2.rectangle(img, (ex,ey), (ew,eh), color=(255,255,255), thickness=1)
             images_array.append(eye_img_l)
-            
+          
             # print(img[ey:eh,ex:ew,:].shape)
-        count+=1
+        count+=1 
         cv2.imshow('result', img)
         if cv2.waitKey(1) == ord('q'):
             break
@@ -93,49 +93,6 @@ def capture(path): #video를 입력받아 image array를 return(numpy ndarray)
 # images_array => 5초에 50장 저장한 배열
 
 test_images = capture("T")
-'''
-if os.path.isfile("videos_array"):
-    with open("videos_array","rb") as va:
-        videos=pickle.load(va)
-    with open("video_labels","rb") as vl:
-        video_labels=pickle.load(vl)
-
-for i in awaken_list:
-    print(i)
-    array = capture("./nd1/"+i)
-    if len(array)==1:
-        continue
-    videos.append(array)
-    video_labels.append(1)  # 깨어있는 영상 
-    with open("videos_array","wb") as va:
-        pickle.dump(videos,va)
-    with open("video_labels","wb") as vl:
-        pickle.dump(video_labels, vl)
-    os.remove("./nd1/"+i)
-
-for i in sleeping_list:
-    print(i)
-    array = capture("./drawsy/"+i)
-    if len(array)==1:
-        continue
-    videos.append(array)
-    video_labels.append(0)
-    with open("videos_array","wb") as va:
-        pickle.dump(videos,va)
-        va.close()
-    with open("video_labels","wb") as vl:
-        pickle.dump(video_labels, vl)
-        vl.close()
-    os.remove("./drawsy/"+i)
-
-'''
-
-
-
-
-#재사용가능하게 디렉토리에 pickle 모듈로 저장
-
-
 
 #window close
 cv2.destroyAllWindows()
