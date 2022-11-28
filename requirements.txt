@@ -4,8 +4,11 @@ cached-property @ file:///home/conda/feedstock_root/build_artifacts/cached_prope
 cachetools==5.2.0
 certifi==2022.9.24
 charset-normalizer==2.1.1
+cmake==3.25.0
 contourpy==1.0.6
+cvlib==0.2.7
 cycler==0.11.0
+dlib @ file:///Users/runner/miniforge3/conda-bld/dlib_1652035204403/work
 flatbuffers==22.10.26
 fonttools==4.38.0
 gast==0.4.0
@@ -15,6 +18,8 @@ google-pasta==0.2.0
 grpcio @ file:///Users/runner/miniforge3/conda-bld/grpcio_1653138968159/work
 h5py @ file:///Users/runner/miniforge3/conda-bld/h5py_1637964553571/work
 idna==3.4
+imageio==2.22.4
+imutils==0.5.4
 joblib==1.2.0
 keras==2.10.0
 Keras-Preprocessing==1.1.2
@@ -29,6 +34,7 @@ opencv-contrib-python==4.6.0.66
 opt-einsum==3.3.0
 packaging==21.3
 Pillow==9.3.0
+progressbar==2.5
 protobuf==3.19.4
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
