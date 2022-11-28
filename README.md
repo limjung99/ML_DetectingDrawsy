@@ -19,7 +19,7 @@ $ python main.py
 
 
 ## 필요한 Data Download
-<a href="https://drive.google.com/drive/folders/1F_orUU4ryFcuhEfT6qy7djC2Be7s8B4H? usp=share_link">파일다운로드</a>
+<a href="https://drive.google.com/drive/folders/1F_orUU4ryFcuhEfT6qy7djC2Be7s8B4H? usp=share_link">파일다운로드</a>\n
 fItted_first_model.h5 : 학습한 1차모델
 fittted_second_model.h5 : 학습한 2차모델
 close_eye.zip: 1차모델 학습을 위한 감은 눈 Data
