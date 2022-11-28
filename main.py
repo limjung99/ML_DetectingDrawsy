@@ -91,8 +91,12 @@ if __name__ == "__main__":
                 drawsy_array.append(now_drawsy)
             if sum(drawsy_array) > 1:
                 is_drawsy = 0
+                print("------------최종 predict 결과------------")
+                print("꺠어있는 상태")
             else:
                 is_drawsy = 1
+                print("------------최종 predict 결과------------")
+                print("졸고있는 상태")
             images_array = []
             count = 0
             drawsy_array = []

@@ -63,21 +63,26 @@ def make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes):
     model.add(Conv2D(32, (3,3), padding = 'same', activation = 'relu'))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Dropout(0.25))
 
     model.add(Conv2D(64, (3,3), padding = 'same', activation = 'relu'))
     model.add(Conv2D(64, (3,3), padding = 'same', activation = 'relu'))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Dropout(0.25))
 
     model.add(Conv2D(128,(3,3), padding='same', activation='relu'))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(2,2)))
+    model.add(Dropout(0.25))
     model.add(Conv2D(128,(3,3), padding='same', activation='relu'))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(2,2)))
+    model.add(Dropout(0.25))
     model.add(Conv2D(256,(3,3), padding='same', activation='relu'))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(2,2)))
+    model.add(Dropout(0.25))
     model.add(Flatten())
     model.add(Dense(128, activation = 'relu'))
     model.add(Dropout(0.5))
@@ -88,7 +93,7 @@ def make_model(x_train, x_test, y_train, y_test,epochs,batch_sizes):
     model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs, batch_size=batch_sizes)
 
-    model.save('fitted_first_model.h5')
+    # model.save('fitted_first_model.h5')
 
     return model,history
 
@@ -103,9 +108,12 @@ def plot_history(history):
 def blink_prediction(crop_images):
     if os.path.isfile("fitted_first_model.h5"): # 모델 파일이 있는 경우
         model = load_model("fitted_first_model.h5")
+        print(model.summary())
         images_prediction = []
         images_prediction.append(np.argmax(model.predict(crop_images), axis=-1))
         images_prediction = np.array(images_prediction)
+        print("------------1차모델 predict 결과------------")
+        print(images_prediction)
         return images_prediction
     else: # 만들어둔 모델 파일이 없는 경우
         x_train, x_test, y_train, y_test = load_data()

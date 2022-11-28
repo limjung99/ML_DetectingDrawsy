@@ -98,6 +98,8 @@ def drawsy_prediction(images_prediction):
     predicted = make_predicted()
     second_model = make_model(predicted,videos_label)
     now_drawsy = np.argmax(second_model.predict(np.array(images_prediction)),axis=-1)
+    print("------------2차모델 predict 결과------------")
+    print(now_drawsy)
     return now_drawsy
 
 
