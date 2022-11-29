@@ -1,6 +1,4 @@
-# -_-
-기계학습
-
+<img width="1092" alt="image" src="https://user-images.githubusercontent.com/81519350/204428646-777af6d5-372e-4221-a507-e889c82635a1.png">
 
 ## 설치방법
 ```bash
