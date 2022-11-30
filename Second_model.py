@@ -2,7 +2,7 @@ import First_model
 import pickle
 import numpy as np
 import os 
-from sklearn.model_selection import train_test_split,KFold
+from sklearn.model_selection import train_test_split,StratifiedKFold
 from keras.models import Sequential, load_model
 from keras.layers import Dense
 
@@ -65,7 +65,7 @@ def make_model(predicted,ans):
         acc_per_fold=[]
         loss_per_fold=[]
         k=5
-        kfold = KFold(n_splits=k,shuffle=True)
+        kfold = StratifiedKFold(n_splits=k,shuffle=True)
         fold_no=1
         for train_idx, test_idx in kfold.split(x_train, y_train):
             second_model = Sequential()
