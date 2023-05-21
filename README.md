@@ -3,7 +3,7 @@
 * 졸음 운전 감지 project
 * 1차 모델 : CNN -> 5초간의 영상을 50장의 PNG로 변환 후 각 이미지마다 눈을 감고 있는지 CNN 모델로 판단 
 * 2차 모델 : DNN -> 50개의 0과1의 vector를 input으로 받고 최종적으로 졸음운전인지 아닌지 판단 
-* 후 보정 알고리즘 : (0~5)초 , (1~6)초 , (2~7)초 총 3번을 판단 후 majority vote를 통해 최종 졸음 운전인지 판단 
+* 후 보정 알고리즘 : (0-5)초 , (1-6)초 , (2-7)초 총 3번을 판단 후 majority vote를 통해 최종 졸음 운전인지 판단 
 
 ## Full Model 개요
 <img width="1092" alt="image" src="https://user-images.githubusercontent.com/81519350/204428646-777af6d5-372e-4221-a507-e889c82635a1.png">
